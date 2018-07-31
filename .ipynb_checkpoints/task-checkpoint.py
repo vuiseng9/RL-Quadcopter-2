@@ -28,7 +28,23 @@ class Task():
 
     def get_reward(self):
         """Uses current pose of sim to return reward."""
-        reward = 1.-.3*(abs(self.sim.pose[:3] - self.target_pos)).sum()
+        
+        # a reward of 10 for each successful step
+        # discount based of Manhattan Distance between target and current position
+        # discount proportionally to sum of Euler angle
+        reward = 10 - 0.01*(abs(self.sim.pose[:3] - self.target_pos)).sum() - 0.01*self.sim.pose[3:6].sum()
+        
+        # different weightage of penalty for gap in x, y, z
+        penalty_x = abs(self.sim.pose[0] - self.target_pos[0]) * 0.002
+        penalty_y = abs(self.sim.pose[1] - self.target_pos[1]) * 0.002
+        penalty_z = abs(self.sim.pose[2] - self.target_pos[2]) * 0.01
+        
+        reward = reward - penalty_x - penalty_y - penalty_z
+        
+        # Extra reward if sum of Manhattan Distance is within 30
+        if (abs(self.sim.pose[:3] - self.target_pos)).sum() < 30:
+             reward += 100
+
         return reward
 
     def step(self, rotor_speeds):

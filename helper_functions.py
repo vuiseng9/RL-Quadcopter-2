@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D
 def plot3d_episode_trajectory(df):
     df = df.reset_index(drop=True)
     # environment boundary
-    axis_limits=[(-150, 150), (-150, 150), (0, 255)]
+    axis_limits=[(-50, 50), (-50, 50), (0, 150)]
 
     fig = plt.figure(figsize=(6, 6))
     ax = Axes3D(fig)
